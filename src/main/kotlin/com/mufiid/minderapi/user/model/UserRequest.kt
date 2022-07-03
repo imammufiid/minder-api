@@ -6,12 +6,12 @@ import javax.validation.constraints.NotBlank
 data class UserRequest(
 
     @field:NotBlank
-    val firstName: String,
+    val firstName: String = "",
 
     @field:NotBlank
-    val lastName: String,
+    val lastName: String = "",
 
     @field:NotBlank
     @field:Min(value = 8)
-    val password: String
+    val password: String = ""
 )
