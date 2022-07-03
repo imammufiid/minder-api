@@ -1,5 +1,6 @@
 package com.mufiid.minderapi.user.service
 
+import com.mufiid.minderapi.authentication.JwtConfig
 import com.mufiid.minderapi.user.model.*
 import com.mufiid.minderapi.user.repository.UserRepository
 import com.mufiid.minderapi.utils.MinderException
@@ -53,15 +54,12 @@ class UserServiceImpl(
         validationUtils.validate(userLoginRequest)
 
         val existingUser = getByUsername(userLoginRequest.username)
-        val result = existingUser.getOrNull()
-            if (existingUser.isSuccess) {
-            if (userLoginRequest.password == result?.password) {
-                return LoginResponse(token = "my_token").toResult()
+        return existingUser.map {
+            if (userLoginRequest.password == it.password) {
+                return LoginResponse(JwtConfig.generateToken(it)).toResult()
             } else {
                 throw MinderException("Password invalid!")
             }
-        } else {
-            throw MinderException("User not found!")
         }
     }
 

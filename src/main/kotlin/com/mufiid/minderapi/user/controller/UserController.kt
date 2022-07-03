@@ -8,6 +8,7 @@ import com.mufiid.minderapi.user.model.UserResponse
 import com.mufiid.minderapi.user.service.UserService
 import com.mufiid.minderapi.utils.asResponse
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/v1/users")
+@RequestMapping("/api/v1/users")
 class UserController {
     @Autowired
     private lateinit var userService: UserService
@@ -36,12 +37,12 @@ class UserController {
         return userService.login(loginRequest).asResponse()
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     fun update(
-        @PathVariable("id") id: String,
         @RequestBody userRequest: UserRequest
     ): BaseResponse<UserResponse> {
-        return userService.update(id, userRequest).asResponse()
+        val userId = SecurityContextHolder.getContext().authentication.principal as String
+        return userService.update(userId, userRequest).asResponse()
     }
 
     @GetMapping
