@@ -12,6 +12,9 @@ data class User(
     @Id
     var id: String? = UUID.randomUUID().toString(),
 
+    @Column(name = "username")
+    var userName: String? = "",
+
     @Column(name = "first_name")
     var firstName: String? = "",
 

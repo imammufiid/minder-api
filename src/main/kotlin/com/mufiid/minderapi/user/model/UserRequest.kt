@@ -6,6 +6,9 @@ import javax.validation.constraints.NotBlank
 data class UserRequest(
 
     @field:NotBlank
+    val userName: String = "",
+
+    @field:NotBlank
     val firstName: String = "",
 
     @field:NotBlank
