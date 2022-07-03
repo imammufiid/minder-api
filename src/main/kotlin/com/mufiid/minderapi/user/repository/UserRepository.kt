@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
 interface UserRepository : JpaRepository<User, String> {
-    @Query(value = "SELECT * FROM users WHERE username = :username", nativeQuery = true)
-    fun findBy(@Param("username") username: String?): User?
+    @Query(value = "SELECT * FROM users WHERE username = :username LIMIT 1", nativeQuery = true)
+    fun findByUsername(@Param("username") username: String?): User?
 }

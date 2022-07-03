@@ -17,4 +17,14 @@ data class UserRequest(
     @field:NotBlank
     @field:Min(value = 8)
     val password: String = ""
-)
+) {
+    fun createUser(): User {
+        return User(
+            userName = userName,
+            firstName = firstName,
+            lastName = lastName,
+            password = password,
+            createdAt = System.currentTimeMillis().toString()
+        )
+    }
+}

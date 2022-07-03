@@ -1,12 +1,17 @@
 package com.mufiid.minderapi.user.controller
 
 import com.mufiid.minderapi.base.BaseResponse
+import com.mufiid.minderapi.user.model.LoginResponse
+import com.mufiid.minderapi.user.model.UserLoginRequest
 import com.mufiid.minderapi.user.model.UserRequest
 import com.mufiid.minderapi.user.model.UserResponse
 import com.mufiid.minderapi.user.service.UserService
 import com.mufiid.minderapi.utils.asResponse
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -17,11 +22,30 @@ class UserController {
     @Autowired
     private lateinit var userService: UserService
 
-    @PostMapping
-    fun createUser(
+    @PostMapping("/register")
+    fun register(
         @RequestBody userRequest: UserRequest
     ): BaseResponse<UserResponse> {
-        val result = userService.create(userRequest)
-        return result.asResponse()
+        return userService.register(userRequest).asResponse()
+    }
+
+    @PostMapping("/login")
+    fun login(
+        @RequestBody loginRequest: UserLoginRequest
+    ): BaseResponse<LoginResponse> {
+        return userService.login(loginRequest).asResponse()
+    }
+
+    @PutMapping("/{id}")
+    fun update(
+        @PathVariable("id") id: String,
+        @RequestBody userRequest: UserRequest
+    ): BaseResponse<UserResponse> {
+        return userService.update(id, userRequest).asResponse()
+    }
+
+    @GetMapping
+    fun getAllUsers(): BaseResponse<List<UserResponse>> {
+        return userService.getUsers().asResponse()
     }
 }
