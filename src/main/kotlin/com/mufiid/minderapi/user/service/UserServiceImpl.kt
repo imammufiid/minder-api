@@ -2,6 +2,7 @@ package com.mufiid.minderapi.user.service
 
 import com.mufiid.minderapi.authentication.JwtConfig
 import com.mufiid.minderapi.user.model.*
+import com.mufiid.minderapi.user.repository.UserLikedRepository
 import com.mufiid.minderapi.user.repository.UserRepository
 import com.mufiid.minderapi.utils.MinderException
 import com.mufiid.minderapi.utils.ValidationUtils
@@ -15,6 +16,9 @@ class UserServiceImpl(
     private val userRepository: UserRepository,
 
     @Autowired
+    private val userLikedRepository: UserLikedRepository,
+
+    @Autowired
     private val validationUtils: ValidationUtils
 ) : UserService {
 
@@ -26,7 +30,7 @@ class UserServiceImpl(
             throw MinderException("User is exist!")
         }
 
-        val result =  userRepository.save(userRequest.createUser())
+        val result = userRepository.save(userRequest.createUser())
         return Mapper.mapEntityToResponse(result).toResult()
     }
 
@@ -46,7 +50,7 @@ class UserServiceImpl(
         existingUser.lastName = userRequest.lastName
         existingUser.updatedAt = System.currentTimeMillis().toString()
 
-        val result =  userRepository.save(existingUser)
+        val result = userRepository.save(existingUser)
         return Mapper.mapEntityToResponse(result).toResult()
     }
 
@@ -67,5 +71,27 @@ class UserServiceImpl(
         return userRepository.findAll().map {
             Mapper.mapEntityToResponse(it)
         }.toResult()
+    }
+
+    override fun getNearestUser(): Result<List<UserResponse>> {
+        return userRepository.findAll().map {
+            Mapper.mapEntityToResponse(it)
+        }.toResult()
+    }
+
+    override fun setLikedUser(idUser: String, userLikedRequest: UserLikedRequest): Result<UserLikedResponse> {
+        val result = userLikedRepository.save(
+            UserLiked(
+                userId = idUser,
+                userIdLiked = userLikedRequest.idUserLiked,
+                isLiked = userLikedRequest.isLiked
+            )
+        )
+        return UserLikedResponse(
+            result.id,
+            idUser,
+            userLikedRequest.idUserLiked,
+            userLikedRequest.isLiked
+        ).toResult()
     }
 }
